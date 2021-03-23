@@ -8,9 +8,8 @@ In this project you'll find the following directories and files:
 taskzenvia/
 
 ├── Assets
-├── bin
-├── obj
 ├── Properties
+├── src
 ├── .gitignore
 ├── LICENCE.md
 ├── Program.cs
@@ -22,6 +21,7 @@ taskzenvia/
 
 ```
 cd tetris
+dotnet build
 dotnet run
 ```
 
