@@ -3,12 +3,12 @@ namespace tetris
 	public enum Action
 	{
 		Exit = 0,
-		Left = 1,
-		Right = 2,
-		RotateClockwise = 3,
-		RotateCounterClockwise = 4,		
-		Save = 5,
-		NoSave = 6,
+		Save = 1,
+		Reset = 2,
+		Left = 3,
+		Right = 4,
+		RotateClockwise = 5,
+		RotateCounterClockwise = 6,
 		NoAction = 7
 	}
 }

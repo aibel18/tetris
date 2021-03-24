@@ -4,12 +4,8 @@
 	{
 		static void Main(string[] args)
 		{
-
-			ConsoleRender.setupConsole();
-
-			var game = new Game();
+			var game = new Game(new ConsoleInputHandler(), new ConsoleRender());
 			game.run();
-
 		}
 	}
 }

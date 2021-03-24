@@ -5,26 +5,50 @@ namespace tetris
 {
 	class ConsoleRender : IRender
 	{
-		private static int WIDTH = 300;
-		private static int HEIGHT = 300;
 
-		public static void setupConsole()
+		private Game TetrisGame;
+		private int width;
+		private int height;
+
+		public ConsoleRender()
 		{
+		}
+
+		public void setup(Game game)
+		{
+			this.TetrisGame = game;
+
 			Console.Clear();
+			this.width = this.TetrisGame.Grid.matrix.GetLength(0);
+			this.height = this.TetrisGame.Grid.matrix.GetLength(1);
+
 			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
 			{
-				Console.SetWindowSize(300, WIDTH + 1);
-				Console.SetBufferSize(300, HEIGHT + 1);
+				Console.SetWindowSize(this.width, this.height);
+				Console.SetBufferSize(this.width, this.height);
 
 				Console.CursorVisible = false;
 			}
-			Console.Title = "Tetris";
-			// Console.ReadKey(true);
+			Console.Title = this.TetrisGame.Title;
 		}
 
+		public void renderUI()
+		{
+			Console.WriteLine("===" + this.TetrisGame.Title + "===");
+		}
 		public void render()
 		{
-			throw new NotImplementedException();
+
+			for (int j = this.height - 1; j >= 0; j--)
+			{
+				String lineRender = "";
+				for (int i = 0; i < this.width; i++)
+				{
+					lineRender += this.TetrisGame.Grid.matrix[i, j];
+				}
+				Console.WriteLine(lineRender);
+			}
+			Console.WriteLine("==========");
 		}
 	}
 }

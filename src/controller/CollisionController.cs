@@ -1,33 +1,28 @@
+using System;
+
 namespace tetris
 {
 	class CollisionController
 	{
 		public static bool isCollision(Grid grid, Figure figure)
 		{
-			var positions = new Vector2Int[4];
-
-			// update positions
-			for (int i = 0; i < figure.elements.Length; i++)
-			{
-				positions[i].X = figure.elements[i].X + figure.position.X;
-				positions[i].Y = figure.elements[i].Y + figure.position.Y;
-			}
 
 			// verify collitions
-			for (int i = 0; i < positions.Length; i++)
+			for (int i = 0; i < 4; i++)
 			{
 				// with horizontal wall
-				if (positions[i].X < 0 || positions[i].X > grid.dimension.X)
+				var p = figure.getPosition(i);
+				if (p.X < 0 || p.X >= grid.dimension.X)
 				{
 					return true;
 				}
 				// with floor
-				if (positions[i].Y < 0)
+				if (p.Y < 0)
 				{
 					return true;
 				}
 				// with matrix's elements
-				if (grid.matrix[positions[i].X, positions[i].Y])
+				if (grid.getElement(p) != ' ')
 				{
 					return true;
 				}

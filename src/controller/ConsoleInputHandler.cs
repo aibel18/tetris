@@ -12,6 +12,8 @@ namespace tetris
 			{
 				case ConsoleKey.Escape:
 					return Action.Exit;
+				case ConsoleKey.S:
+					return Action.Save;
 				case ConsoleKey.LeftArrow:
 					return Action.Left;
 				case ConsoleKey.RightArrow:
@@ -20,10 +22,6 @@ namespace tetris
 					return Action.RotateClockwise;
 				case ConsoleKey.UpArrow:
 					return Action.RotateCounterClockwise;
-				case ConsoleKey.Y:
-					return Action.Save;
-				case ConsoleKey.N:
-					return Action.NoSave;
 				default:
 					return Action.NoAction;
 			}
