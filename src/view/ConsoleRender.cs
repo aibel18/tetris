@@ -3,9 +3,8 @@ using System.Runtime.InteropServices;
 
 namespace tetris
 {
-	class MyConsole
+	class ConsoleRender : IRender
 	{
-
 		private static int WIDTH = 300;
 		private static int HEIGHT = 300;
 
@@ -21,6 +20,11 @@ namespace tetris
 			}
 			Console.Title = "Tetris";
 			// Console.ReadKey(true);
+		}
+
+		public void render()
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

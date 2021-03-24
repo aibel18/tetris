@@ -5,7 +5,7 @@
 		static void Main(string[] args)
 		{
 
-			MyConsole.setupConsole();
+			ConsoleRender.setupConsole();
 
 			var game = new Game();
 			game.run();

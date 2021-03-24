@@ -2,8 +2,8 @@ namespace tetris
 {
 	public struct Vector2Int
 	{
-		public int X { get; private set; }
-		public int Y { get; private set; }
+		public int X { get; set; }
+		public int Y { get; set; }
 
 		public Vector2Int(int X, int Y)
 		{
