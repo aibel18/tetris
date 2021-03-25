@@ -7,7 +7,9 @@ namespace tetris
 	{
 		public Grid Grid { get; set; }
 		public string Title { get; set; }
-		// private int score;
+		private int score;
+		private bool on = true;
+		private string nameFile = "tetris";
 
 		private Figure currentFigure;
 		private Figure nextFigure;
@@ -16,10 +18,9 @@ namespace tetris
 		private IInputHandler inputHandler;
 		private IRender render;
 
-		public Game(IInputHandler inputHandler, IRender render, int dimX = 15, int dimY = 15)
+		public Game(IInputHandler inputHandler, IRender render, int dimX = 15, int dimY = 17)
 		{
-
-			// this.score = 0;
+			this.score = 0;
 			this.Title = "My Tetris";
 			this.Grid = new Grid(new Vector2Int(dimX, dimY));
 			this.figures = new List<Figure>();
@@ -31,8 +32,55 @@ namespace tetris
 
 		private void load()
 		{
-			if (this.currentFigure == null)
-				this.currentFigure = FigureController.createFigure(this.Grid.dimension.X / 2, this.Grid.dimension.Y - 1);
+			try
+			{
+				string[] lines = File.read(nameFile);
+
+				this.render.render("load the game? (y/n)");
+				if (this.inputHandler.confirmationInput())
+				{
+					this.score = int.Parse(lines[0]);
+					this.Grid.init(lines);
+				}
+			}
+			catch (System.Exception)
+			{
+				this.render.render("no load file");
+			}
+
+			this.currentFigure = FigureController.createFigure(this.Grid.dimension.X / 2, this.Grid.dimension.Y - 2);
+
+			this.nextFigure = currentFigure;
+		}
+		private void reset()
+		{
+			this.score = 0;
+			this.Grid.init();
+			this.currentFigure = FigureController.createFigure(this.Grid.dimension.X / 2, this.Grid.dimension.Y - 2);
+
+			this.nextFigure = currentFigure;
+		}
+
+		private void save()
+		{
+			string[] lines = new string[3 + this.Grid.dimension.Y];
+			lines[0] = this.score.ToString();
+			lines[1] = this.Grid.dimension.X.ToString();
+			lines[2] = this.Grid.dimension.Y.ToString();
+
+			for (int j = 0; j < this.Grid.dimension.Y; j++)
+			{
+				string line = "";
+				for (int i = 0; i < this.Grid.dimension.X; i++)
+				{
+					line += this.Grid.matrix[j][i];
+				}
+				lines[j + 3] = line;
+			}
+
+			File.save(nameFile, lines);
+
+			this.render.render("game saved!!");
 		}
 
 		public void paint()
@@ -44,6 +92,7 @@ namespace tetris
 			}
 
 			// rendering
+			Console.WriteLine("==== " + this.Title + " score: " + this.score + " ====");
 			this.render.render();
 
 			// clean currentFigure
@@ -93,11 +142,14 @@ namespace tetris
 					this.nextFigure = FigureController.rotate(this.currentFigure);
 					break;
 				case Action.Save:
-				// save game
+					this.save();
+					this.on = false;
+					return;
 				case Action.Exit:
+					this.on = false;
 					return;
 				case Action.Reset:
-					this.load();
+					this.reset();
 					break;
 				default:
 					this.nextFigure = this.currentFigure;
@@ -110,11 +162,12 @@ namespace tetris
 			//load game
 			this.load();
 
-			while (true)
+			while (this.on)
 			{
+				this.update();
 				this.paint();
 				this.handlerEvent();
-				this.update();
+
 			}
 		}
 
@@ -142,12 +195,13 @@ namespace tetris
 				}
 			}
 
-			for (int i = deleteIndexRow.Count - 1; i >= 0; i--)
+			foreach (var index in deleteIndexRow.Reverse())
 			{
-				Grid.removeLine(i);
+				Grid.removeLine(index);
+				this.score++;
 			}
 
-			this.currentFigure = FigureController.createFigure(this.Grid.dimension.X / 2, this.Grid.dimension.Y - 1);
+			this.currentFigure = FigureController.createFigure(this.Grid.dimension.X / 2, this.Grid.dimension.Y - 2);
 		}
 	}
 }

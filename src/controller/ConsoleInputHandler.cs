@@ -14,6 +14,8 @@ namespace tetris
 					return Action.Exit;
 				case ConsoleKey.S:
 					return Action.Save;
+				case ConsoleKey.R:
+					return Action.Reset;
 				case ConsoleKey.LeftArrow:
 					return Action.Left;
 				case ConsoleKey.RightArrow:
@@ -25,6 +27,14 @@ namespace tetris
 				default:
 					return Action.NoAction;
 			}
+		}
+
+		public bool confirmationInput()
+		{
+			if (ConsoleKey.Y == Console.ReadKey().Key)
+				return true;
+			else
+				return false;
 		}
 	}
 }

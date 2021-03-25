@@ -5,7 +5,8 @@ namespace tetris
 {
 	public class Grid
 	{
-		public Vector2Int dimension { get; set; }
+		public Vector2Int dimension;
+		public Vector2Int Dimension { get; set; }
 
 		public List<char[]> matrix { get; set; }
 
@@ -14,7 +15,14 @@ namespace tetris
 			this.dimension = dimension;
 			this.matrix = new List<char[]>();
 
+			this.init();
+		}
+
+		public void init()
+		{
 			// init matrix
+			this.matrix.Clear();
+
 			for (int j = 0; j < this.dimension.Y; j++)
 			{
 				char[] row = new char[this.dimension.X];
@@ -24,6 +32,22 @@ namespace tetris
 					row[i] = Letter.SpaceLetter;
 				}
 				this.matrix.Add(row);
+			}
+		}
+
+		public void init(string[] lines)
+		{
+
+			this.dimension.X = int.Parse(lines[1]);
+			this.dimension.Y = int.Parse(lines[2]);
+
+			for (int j = 3; j < lines.Length; j++)
+			{
+				var line = lines[j];
+				for (int i = 0; i < line.Length; i++)
+				{
+					this.matrix[j - 3][i] = line[i];
+				}
 			}
 		}
 
