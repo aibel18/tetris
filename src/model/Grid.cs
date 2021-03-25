@@ -1,3 +1,4 @@
+using System;
 using System.Numerics;
 
 namespace tetris
@@ -13,11 +14,12 @@ namespace tetris
 			this.dimension = dimension;
 			this.matrix = new char[dimension.X, dimension.Y];
 
+			// init matrix
 			for (int i = 0; i < this.dimension.X; i++)
 			{
 				for (int j = 0; j < this.dimension.Y; j++)
 				{
-					this.matrix[i, j] = ' ';
+					this.matrix[i, j] = Letter.SpaceLetter;
 				}
 			}
 		}
@@ -36,7 +38,33 @@ namespace tetris
 			{
 				return this.matrix[position.X, position.Y];
 			}
-			return ' ';
+			return Letter.SpaceLetter;
+		}
+
+		public bool verifyLine(int index)
+		{
+			for (int i = 0; i < this.dimension.X; i++)
+			{
+				if (this.matrix[i, index] == Letter.SpaceLetter)
+					return false;
+			}
+			return true;
+		}
+
+		public void removeLine(int index)
+		{
+			for (int i = 0; i < this.dimension.X; i++)
+			{
+				this.matrix[i, index] = Letter.SpaceLetter;
+			}
+
+			//for (int j = index + 1; j < this.dimension.Y; j++)
+			// {
+			// 	for (int i = 0; i < this.dimension.X; i++)
+			// 	{
+			// 		this.matrix[i, j - 1] = this.matrix[i, j];
+			// 	}
+			// }
 		}
 
 	}

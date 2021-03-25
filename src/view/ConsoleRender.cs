@@ -34,21 +34,22 @@ namespace tetris
 
 		public void renderUI()
 		{
-			Console.WriteLine("===" + this.TetrisGame.Title + "===");
+			Console.WriteLine("+++" + this.TetrisGame.Title + "+++");
 		}
 		public void render()
 		{
 
 			for (int j = this.height - 1; j >= 0; j--)
 			{
-				String lineRender = "";
+				String lineRender = "+";
 				for (int i = 0; i < this.width; i++)
 				{
 					lineRender += this.TetrisGame.Grid.matrix[i, j];
 				}
+				lineRender += "+";
 				Console.WriteLine(lineRender);
 			}
-			Console.WriteLine("==========");
+			Console.WriteLine(Letter.lineLetter('+', this.width+2));
 		}
 	}
 }

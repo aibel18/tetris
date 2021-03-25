@@ -22,7 +22,7 @@ namespace tetris
 					return true;
 				}
 				// with matrix's elements
-				if (grid.getElement(p) != ' ')
+				if (grid.getElement(p) != Letter.SpaceLetter)
 				{
 					return true;
 				}

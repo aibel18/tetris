@@ -16,7 +16,7 @@ namespace tetris
 		private IInputHandler inputHandler;
 		private IRender render;
 
-		public Game(IInputHandler inputHandler, IRender render, int dimX = 10, int dimY = 10)
+		public Game(IInputHandler inputHandler, IRender render, int dimX = 13, int dimY = 13)
 		{
 
 			// this.score = 0;
@@ -29,24 +29,19 @@ namespace tetris
 			this.render.setup(this);
 		}
 
-		private void reset()
+		private void createFigure()
 		{
 			// update Figure
 			// if (this.currentFigure == null)
 			{
-				this.currentFigure = new Figure('A');
+				this.currentFigure = new Figure(Letter.randomLetter());
 				this.currentFigure.position.X = this.Grid.dimension.X / 2;
-				this.currentFigure.position.Y = this.Grid.dimension.Y - 2;
+				this.currentFigure.position.Y = this.Grid.dimension.Y - 1;
 
-				this.currentFigure.setElement(0, 0, -1);
-				this.currentFigure.setElement(1, 0, 0);
-				this.currentFigure.setElement(2, 0, 1);
-				this.currentFigure.setElement(3, 0, 2);
-
-				for (int i = 0; i < 4; i++)
-				{
-					this.Grid.setElement(this.currentFigure.getPosition(i), this.currentFigure.label);
-				}
+				this.currentFigure.setElement(0, 0, -2);
+				this.currentFigure.setElement(1, 0, -1);
+				this.currentFigure.setElement(2, 0, 0);
+				this.currentFigure.setElement(3, 0, 1);
 
 				this.nextFigure = this.currentFigure;
 			}
@@ -68,7 +63,7 @@ namespace tetris
 			// remove currentFigure
 			for (int i = 0; i < 4; i++)
 			{
-				this.Grid.setElement(this.currentFigure.getPosition(i), ' ');
+				this.Grid.setElement(this.currentFigure.getPosition(i), Letter.SpaceLetter);
 			}
 		}
 
@@ -78,16 +73,16 @@ namespace tetris
 			if (CollisionController.isCollision(this.Grid, this.nextFigure))
 			{
 				this.nextFigure = this.currentFigure;
-				Console.WriteLine("entor collision");
 			}
 
 			this.currentFigure = this.nextFigure;
 
 			this.nextFigure = FigureController.down(this.nextFigure);
+
 			if (CollisionController.isCollision(this.Grid, this.nextFigure))
 			{
-				this.nextFigure = this.currentFigure;
-				Console.WriteLine("entor collision2");
+				this.fixFigure(this.currentFigure);
+				return;
 			}
 
 			this.currentFigure = this.nextFigure;
@@ -116,7 +111,7 @@ namespace tetris
 				case Action.Exit:
 					return;
 				case Action.Reset:
-					this.reset();
+					this.createFigure();
 					break;
 				default:
 					// this.nextFigure = FigureController.down(this.currentFigure);
@@ -127,9 +122,8 @@ namespace tetris
 
 		public void run()
 		{
-
 			//load game
-			this.reset();
+			this.createFigure();
 
 			while (true)
 			{
@@ -139,6 +133,31 @@ namespace tetris
 			}
 		}
 
+		public void fixFigure(Figure figure)
+		{
+			HashSet<int> indexLine = new HashSet<int>();
 
+			for (int i = 0; i < 4; i++)
+			{
+				var p = figure.getPosition(i);
+
+				indexLine.Add(p.Y);
+
+				this.Grid.setElement(p, figure.label);
+			}
+
+			foreach (var index in indexLine)
+			{
+				if (this.Grid.verifyLine(index))
+				{
+					this.Grid.removeLine(index);
+				}
+			}
+			this.createFigure();
+		}
+
+		public void verifyLine()
+		{
+		}
 	}
 }
