@@ -1,5 +1,5 @@
 using System;
-using System.Numerics;
+using System.Collections.Generic;
 
 namespace tetris
 {
@@ -7,20 +7,23 @@ namespace tetris
 	{
 		public Vector2Int dimension { get; set; }
 
-		public char[,] matrix { get; set; }
+		public List<char[]> matrix { get; set; }
 
 		public Grid(Vector2Int dimension)
 		{
 			this.dimension = dimension;
-			this.matrix = new char[dimension.X, dimension.Y];
+			this.matrix = new List<char[]>();
 
 			// init matrix
-			for (int i = 0; i < this.dimension.X; i++)
+			for (int j = 0; j < this.dimension.Y; j++)
 			{
-				for (int j = 0; j < this.dimension.Y; j++)
+				char[] row = new char[this.dimension.X];
+
+				for (int i = 0; i < this.dimension.X; i++)
 				{
-					this.matrix[i, j] = Letter.SpaceLetter;
+					row[i] = Letter.SpaceLetter;
 				}
+				this.matrix.Add(row);
 			}
 		}
 
@@ -28,7 +31,7 @@ namespace tetris
 		{
 			if (position.X >= 0 && position.X < this.dimension.X && position.Y >= 0 && position.Y < this.dimension.Y)
 			{
-				this.matrix[position.X, position.Y] = label;
+				this.matrix[position.Y][position.X] = label;
 			}
 		}
 
@@ -36,16 +39,18 @@ namespace tetris
 		{
 			if (position.X >= 0 && position.X < this.dimension.X && position.Y >= 0 && position.Y < this.dimension.Y)
 			{
-				return this.matrix[position.X, position.Y];
+				return this.matrix[position.Y][position.X];
 			}
 			return Letter.SpaceLetter;
 		}
 
-		public bool verifyLine(int index)
+		public bool verifyRow(int index)
 		{
+			var row = this.matrix[index];
+
 			for (int i = 0; i < this.dimension.X; i++)
 			{
-				if (this.matrix[i, index] == Letter.SpaceLetter)
+				if (row[i] == Letter.SpaceLetter)
 					return false;
 			}
 			return true;
@@ -53,18 +58,13 @@ namespace tetris
 
 		public void removeLine(int index)
 		{
+			char[] row = new char[this.dimension.X];
 			for (int i = 0; i < this.dimension.X; i++)
 			{
-				this.matrix[i, index] = Letter.SpaceLetter;
+				row[i] = Letter.SpaceLetter;
 			}
-
-			//for (int j = index + 1; j < this.dimension.Y; j++)
-			// {
-			// 	for (int i = 0; i < this.dimension.X; i++)
-			// 	{
-			// 		this.matrix[i, j - 1] = this.matrix[i, j];
-			// 	}
-			// }
+			this.matrix.RemoveAt(index);
+			this.matrix.Add(row);
 		}
 
 	}

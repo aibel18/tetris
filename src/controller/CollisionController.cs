@@ -1,5 +1,3 @@
-using System;
-
 namespace tetris
 {
 	class CollisionController
@@ -8,7 +6,7 @@ namespace tetris
 		{
 
 			// verify collitions
-			for (int i = 0; i < 4; i++)
+			for (int i = 0; i < Figure.Length; i++)
 			{
 				// with horizontal wall
 				var p = figure.getPosition(i);

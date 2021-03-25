@@ -16,7 +16,7 @@ namespace tetris
 		private IInputHandler inputHandler;
 		private IRender render;
 
-		public Game(IInputHandler inputHandler, IRender render, int dimX = 13, int dimY = 13)
+		public Game(IInputHandler inputHandler, IRender render, int dimX = 15, int dimY = 15)
 		{
 
 			// this.score = 0;
@@ -29,39 +29,25 @@ namespace tetris
 			this.render.setup(this);
 		}
 
-		private void createFigure()
+		private void load()
 		{
-			// update Figure
-			// if (this.currentFigure == null)
-			{
-				this.currentFigure = new Figure(Letter.randomLetter());
-				this.currentFigure.position.X = this.Grid.dimension.X / 2;
-				this.currentFigure.position.Y = this.Grid.dimension.Y - 1;
-
-				this.currentFigure.setElement(0, 0, -2);
-				this.currentFigure.setElement(1, 0, -1);
-				this.currentFigure.setElement(2, 0, 0);
-				this.currentFigure.setElement(3, 0, 1);
-
-				this.nextFigure = this.currentFigure;
-			}
+			if (this.currentFigure == null)
+				this.currentFigure = FigureController.createFigure(this.Grid.dimension.X / 2, this.Grid.dimension.Y - 1);
 		}
 
 		public void paint()
 		{
 			// to render currentFigure
-			for (int i = 0; i < 4; i++)
+			for (int i = 0; i < Figure.Length; i++)
 			{
 				this.Grid.setElement(this.currentFigure.getPosition(i), this.currentFigure.label);
 			}
 
-			// render ui
-			this.render.renderUI();
 			// rendering
 			this.render.render();
 
-			// remove currentFigure
-			for (int i = 0; i < 4; i++)
+			// clean currentFigure
+			for (int i = 0; i < Figure.Length; i++)
 			{
 				this.Grid.setElement(this.currentFigure.getPosition(i), Letter.SpaceLetter);
 			}
@@ -101,20 +87,19 @@ namespace tetris
 					this.nextFigure = FigureController.rigth(this.currentFigure);
 					break;
 				case Action.RotateClockwise:
-					this.nextFigure = FigureController.rotate(this.currentFigure);
+					this.nextFigure = FigureController.rotateInv(this.currentFigure);
 					break;
 				case Action.RotateCounterClockwise:
-					this.nextFigure = FigureController.rotateInv(this.currentFigure);
+					this.nextFigure = FigureController.rotate(this.currentFigure);
 					break;
 				case Action.Save:
 				// save game
 				case Action.Exit:
 					return;
 				case Action.Reset:
-					this.createFigure();
+					this.load();
 					break;
 				default:
-					// this.nextFigure = FigureController.down(this.currentFigure);
 					this.nextFigure = this.currentFigure;
 					break;
 			}
@@ -123,7 +108,7 @@ namespace tetris
 		public void run()
 		{
 			//load game
-			this.createFigure();
+			this.load();
 
 			while (true)
 			{
@@ -135,29 +120,34 @@ namespace tetris
 
 		public void fixFigure(Figure figure)
 		{
-			HashSet<int> indexLine = new HashSet<int>();
+			HashSet<int> indexRow = new HashSet<int>();
 
-			for (int i = 0; i < 4; i++)
+			for (int i = 0; i < Figure.Length; i++)
 			{
 				var p = figure.getPosition(i);
 
-				indexLine.Add(p.Y);
+				indexRow.Add(p.Y);
 
 				this.Grid.setElement(p, figure.label);
 			}
 
-			foreach (var index in indexLine)
+			SortedSet<int> deleteIndexRow = new SortedSet<int>();
+
+			// only verify specify row of the figure
+			foreach (var index in indexRow)
 			{
-				if (this.Grid.verifyLine(index))
+				if (this.Grid.verifyRow(index))
 				{
-					this.Grid.removeLine(index);
+					deleteIndexRow.Add(index);
 				}
 			}
-			this.createFigure();
-		}
 
-		public void verifyLine()
-		{
+			for (int i = deleteIndexRow.Count - 1; i >= 0; i--)
+			{
+				Grid.removeLine(i);
+			}
+
+			this.currentFigure = FigureController.createFigure(this.Grid.dimension.X / 2, this.Grid.dimension.Y - 1);
 		}
 	}
 }
