@@ -92,7 +92,7 @@ namespace tetris
 			}
 
 			// rendering
-			Console.WriteLine("==== " + this.Title + " score: " + this.score + " ====");
+			this.render.render("==== " + this.Title + " score: " + this.score + " ====");
 			this.render.render();
 
 			// clean currentFigure
